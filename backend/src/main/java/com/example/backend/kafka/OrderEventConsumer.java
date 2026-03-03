@@ -25,7 +25,7 @@ public class OrderEventConsumer {
             log.info("Received order event: {}", event);
 
     
-            String notificationType = "ORDER_" + event.getStatus().name();
+            String notificationType = "ORDER_" + event.getStatus();
             String title = "Order Update";
             String message = event.getMessage();
 

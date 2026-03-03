@@ -22,6 +22,8 @@ public class UserDto {
     private String password; // For creating users
     private LocalDateTime createdAt;
     private Boolean active;
+    /** true, если пользователь привязывал вход через Google (один аккаунт по email) */
+    private Boolean oauthLinked;
 }
 
 

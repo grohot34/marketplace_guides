@@ -17,25 +17,29 @@ public class ReviewDto {
     private Long id;
     
     @NotNull
-    private Long orderId;
+    private Long bookingId;
     
-    @NotNull
-    private Long providerId;
-    private String providerName;
+    private Long guideId;
+    private String guideName;
     
-    @NotNull
-    private Long serviceId;
-    private String serviceName;
+    private Long tourId;
+    private String tourTitle;
+    
+    private Long customerId;
+    private String customerName;
     
     @NotNull
     @Min(1)
     @Max(5)
     private Integer rating;
     
-    @NotBlank
     private String comment;
     
     private LocalDateTime createdAt;
+    private String status;
+    private String response;
+    private LocalDateTime respondedAt;
+    private String respondedByName;
 }
 
 

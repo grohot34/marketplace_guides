@@ -130,12 +130,18 @@ export interface User {
   role: string
   active?: boolean
   createdAt?: string
+  /** true, если к аккаунту привязан вход через Google */
+  oauthLinked?: boolean
 }
 
 export const userApi = {
   getMe: () => apiClient.get<User>('/users/me'),
   getById: (id: number) => apiClient.get<User>(`/users/${id}`),
   getByUsername: (username: string) => apiClient.get<User>(`/users/username/${username}`),
+  updateMe: (data: { firstName?: string; lastName?: string; email?: string; phone?: string; address?: string }) =>
+    apiClient.put<User>('/users/me', data),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiClient.post<void>('/users/me/change-password', { currentPassword, newPassword }),
 }
 
 export const authApi = {
@@ -159,13 +165,15 @@ export interface AdminStats {
   totalUsers: number
   totalCustomers: number
   totalProviders: number
-  totalServices: number
-  totalOrders: number
-  pendingOrders: number
-  completedOrders: number
-  cancelledOrders: number
+  totalTours?: number
+  totalBookings?: number
+  totalServices?: number
+  totalOrders?: number
+  pendingOrders?: number
+  completedOrders?: number
+  cancelledOrders?: number
   totalRevenue: number
-  ordersByStatus: Record<string, number>
+  ordersByStatus?: Record<string, number>
   usersByRole: Record<string, number>
 }
 
@@ -202,31 +210,14 @@ export const adminApi = {
   updateUserRole: (id: number, role: string) =>
     apiClient.put<User>(`/admin/users/${id}/role?role=${role}`),
   deleteUser: (id: number) => apiClient.delete(`/admin/users/${id}`),
-  getAllServices: () => apiClient.get<Service[]>('/admin/services'),
-  createService: (data: {
-    name: string
-    description?: string
-    price: number
-    durationMinutes?: number
-    imageUrl?: string
-    categoryId: number
-    providerId?: number
-    active?: boolean
-  }) => apiClient.post<Service>('/admin/services', data),
-  updateServiceStatus: (id: number, active: boolean) =>
-    apiClient.put<Service>(`/admin/services/${id}/status?active=${active}`),
-  deleteService: (id: number) => apiClient.delete(`/admin/services/${id}`),
-  getAllOrders: () => apiClient.get<Order[]>('/admin/orders'),
-  createOrder: (data: {
-    serviceId: number
-    scheduledDateTime: string
-    address?: string
-    notes?: string
-  }, customerId: number) =>
-    apiClient.post<Order>(`/admin/orders?customerId=${customerId}`, data),
-  updateOrderStatus: (id: number, status: Order['status']) =>
-    apiClient.put<Order>(`/admin/orders/${id}/status?status=${status}`),
-  deleteOrder: (id: number) => apiClient.delete(`/admin/orders/${id}`),
+  getReviews: (status?: 'PENDING' | 'APPROVED' | 'REJECTED') =>
+    apiClient.get<import('./tours').Review[]>(
+      status ? `/admin/reviews?status=${status}` : '/admin/reviews'
+    ),
+  setReviewStatus: (id: number, status: 'APPROVED' | 'REJECTED') =>
+    apiClient.put<import('./tours').Review>(`/admin/reviews/${id}/status?status=${status}`),
+  setReviewResponse: (id: number, response: string) =>
+    apiClient.put<import('./tours').Review>(`/admin/reviews/${id}/response`, { response }),
 }
 
 

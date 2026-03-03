@@ -104,7 +104,7 @@ public class OrderService {
                     order.getId(),
                     customer.getId(),
                     service.getId(),
-                    order.getStatus(),
+                    order.getStatus().name(),
                     LocalDateTime.now(),
                     "Order created successfully"
             );
@@ -172,7 +172,7 @@ public class OrderService {
                     order.getId(),
                     order.getCustomer().getId(),
                     order.getService().getId(),
-                    order.getStatus(),
+                    order.getStatus().name(),
                     LocalDateTime.now(),
                     "Order status updated to " + status
             );
@@ -218,7 +218,7 @@ public class OrderService {
                     order.getId(),
                     order.getCustomer().getId(),
                     order.getService().getId(),
-                    Order.OrderStatus.CANCELLED,
+                    Order.OrderStatus.CANCELLED.name(),
                     LocalDateTime.now(),
                     "Order cancelled"
             );
@@ -256,7 +256,7 @@ public class OrderService {
                     order.getId(),
                     order.getCustomer().getId(),
                     order.getService().getId(),
-                    order.getStatus(),
+                    order.getStatus().name(),
                     LocalDateTime.now(),
                     "Order deleted by admin"
             );

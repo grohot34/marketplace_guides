@@ -13,15 +13,18 @@ import java.util.Map;
 public class AdminStatsDto {
     private Long totalUsers;
     private Long totalCustomers;
-    private Long totalProviders;
-    private Long totalServices;
-    private Long totalOrders;
-    private Long pendingOrders;
+    private Long totalProviders; // гиды (totalGuides)
+    private Long totalTours;
+    private Long totalBookings;
+    private Long pendingOrders; // для обратной совместимости
     private Long completedOrders;
     private Long cancelledOrders;
-    private BigDecimal totalRevenue;
+    private BigDecimal totalRevenue; // выручка по завершённым бронированиям (BYN)
     private Map<String, Long> ordersByStatus;
     private Map<String, Long> usersByRole;
+    // Устаревшие поля (legacy Services/Orders) — можно не заполнять
+    private Long totalServices;
+    private Long totalOrders;
 }
 
 

@@ -8,9 +8,12 @@ import com.example.backend.dto.UserDto;
 import com.example.backend.model.Category;
 import com.example.backend.model.Order;
 import com.example.backend.model.User;
+import com.example.backend.model.Booking;
+import com.example.backend.repository.BookingRepository;
 import com.example.backend.repository.CategoryRepository;
 import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.ServiceRepository;
+import com.example.backend.repository.TourRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.OrderService;
 import com.example.backend.service.UserService;
@@ -33,6 +36,8 @@ public class AdminService {
     private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
     private final OrderRepository orderRepository;
+    private final BookingRepository bookingRepository;
+    private final TourRepository tourRepository;
     private final CategoryRepository categoryRepository;
     private final UserService userService;
     private final OrderService orderService;
@@ -44,31 +49,34 @@ public class AdminService {
   
         long totalUsers = userRepository.count();
         long totalCustomers = userRepository.countByRole(User.Role.CUSTOMER);
-        long totalProviders = userRepository.countByRole(User.Role.PROVIDER);
+        long totalGuides = userRepository.countByRole(User.Role.GUIDE);
         
         stats.setTotalUsers(totalUsers);
         stats.setTotalCustomers(totalCustomers);
-        stats.setTotalProviders(totalProviders);
+        stats.setTotalProviders(totalGuides);
+
+        long totalTours = tourRepository.count();
+        stats.setTotalTours(totalTours);
+
+        long totalBookings = bookingRepository.count();
+        stats.setTotalBookings(totalBookings);
+
+        BigDecimal totalRevenue = bookingRepository.findAll().stream()
+                .filter(b -> b.getStatus() == Booking.BookingStatus.COMPLETED && b.getTotalPrice() != null)
+                .map(Booking::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        stats.setTotalRevenue(totalRevenue);
 
         long totalServices = serviceRepository.count();
         stats.setTotalServices(totalServices);
-
         long totalOrders = orderRepository.count();
         long pendingOrders = orderRepository.countByStatus(Order.OrderStatus.PENDING);
         long completedOrders = orderRepository.countByStatus(Order.OrderStatus.COMPLETED);
         long cancelledOrders = orderRepository.countByStatus(Order.OrderStatus.CANCELLED);
-
         stats.setTotalOrders(totalOrders);
         stats.setPendingOrders(pendingOrders);
         stats.setCompletedOrders(completedOrders);
         stats.setCancelledOrders(cancelledOrders);
-
-
-        BigDecimal totalRevenue = orderRepository.findAll().stream()
-                .filter(order -> order.getStatus() == Order.OrderStatus.COMPLETED)
-                .map(Order::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        stats.setTotalRevenue(totalRevenue);
 
         Map<String, Long> ordersByStatus = new HashMap<>();
         for (Order.OrderStatus status : Order.OrderStatus.values()) {

@@ -1,0 +1,3 @@
+-- Оплата через Stripe
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS paid BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS stripe_payment_id VARCHAR(255);

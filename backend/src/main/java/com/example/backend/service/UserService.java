@@ -82,6 +82,56 @@ public class UserService {
         return convertToDto(user);
     }
 
+    /**
+     * Обновление профиля текущего пользователя (только безопасные поля).
+     * Менять username и role нельзя.
+     */
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    public UserDto updateCurrentUser(String username, UserDto userDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (userDto.getFirstName() != null) user.setFirstName(userDto.getFirstName());
+        if (userDto.getLastName() != null) user.setLastName(userDto.getLastName());
+        if (userDto.getPhone() != null) user.setPhone(userDto.getPhone());
+        if (userDto.getAddress() != null) user.setAddress(userDto.getAddress());
+        if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
+            if (!userDto.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(userDto.getEmail())) {
+                throw new RuntimeException("Email already in use");
+            }
+            user.setEmail(userDto.getEmail());
+        }
+
+        user = userRepository.save(user);
+        return convertToDto(user);
+    }
+
+    /**
+     * Смена пароля. Для входа по email/паролю нужен текущий пароль.
+     * Если пользователь привязал Google (oauthLinked), при первой установке пароля currentPassword может быть пустым.
+     */
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    public void changePassword(String username, String currentPassword, String newPassword) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isOAuthOnly = user.getGoogleSub() != null && !user.getGoogleSub().isBlank();
+        if (isOAuthOnly && (currentPassword == null || currentPassword.isBlank())) {
+            // Первая установка пароля для аккаунта, созданного через Google
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return;
+        }
+
+        if (currentPassword == null || !passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Invalid current password");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public UserDto updateUserRole(Long id, User.Role role) {
@@ -122,6 +172,7 @@ public class UserService {
         dto.setRole(user.getRole() != null ? user.getRole().name() : null);
         dto.setCreatedAt(user.getCreatedAt());
         dto.setActive(user.getActive());
+        dto.setOauthLinked(user.getGoogleSub() != null && !user.getGoogleSub().isBlank());
         return dto;
     }
 }

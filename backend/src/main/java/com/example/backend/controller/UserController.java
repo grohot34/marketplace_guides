@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.UserDto;
 import com.example.backend.model.User;
 import com.example.backend.service.UserService;
@@ -49,9 +50,30 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByUsername(username));
     }
 
+    @PutMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Update current user profile (firstName, lastName, email, phone, address)")
+    public ResponseEntity<UserDto> updateCurrentUser(
+            Authentication authentication,
+            @Valid @RequestBody UserDto userDto) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(userService.updateCurrentUser(username, userDto));
+    }
+
+    @PostMapping("/me/change-password")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Change password. For OAuth-linked users, currentPassword can be empty to set password first time.")
+    public ResponseEntity<Void> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request) {
+        String username = authentication.getName();
+        userService.changePassword(username, request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'PROVIDER', 'ADMIN')")
-    @Operation(summary = "Update user")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update user (admin only)")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserDto userDto) {

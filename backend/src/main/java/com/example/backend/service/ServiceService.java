@@ -24,7 +24,6 @@ public class ServiceService {
     private final ServiceRepository serviceRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private final ReviewService reviewService;
 
     @Cacheable(value = "services")
     public List<ServiceDto> getAllServices() {
@@ -125,10 +124,9 @@ public class ServiceService {
             dto.setProviderName(service.getProvider().getFirstName() + " " + service.getProvider().getLastName());
         }
 
-     
-        var reviewStats = reviewService.getReviewStatsForService(service.getId());
-        dto.setAverageRating(reviewStats.getAverageRating());
-        dto.setReviewCount(reviewStats.getReviewCount());
+        // Review stats removed - Service model is deprecated, use TourService instead
+        dto.setAverageRating(0.0);
+        dto.setReviewCount(0);
 
         return dto;
     }

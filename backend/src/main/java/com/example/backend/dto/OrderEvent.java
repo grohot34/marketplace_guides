@@ -1,6 +1,5 @@
 package com.example.backend.dto;
 
-import com.example.backend.model.Order;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +14,7 @@ public class OrderEvent implements Serializable {
     private Long orderId;
     private Long customerId;
     private Long serviceId;
-    private Order.OrderStatus status;
+    private String status;
     private LocalDateTime timestamp;
     private String message;
 }

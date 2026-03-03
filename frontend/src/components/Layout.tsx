@@ -24,30 +24,30 @@ export default function Layout() {
             <div className="flex">
               <Link to="/" className="flex items-center px-2 py-2 text-xl font-bold text-primary-600">
                 <Home className="mr-2" />
-                Услуги на дом
+                ГидПоинт
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
-                  to="/services"
+                  to="/tours"
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
                 >
                   <ShoppingBag className="mr-1" size={18} />
-                  Услуги
+                  Экскурсии
                 </Link>
-                {isAuth && (role === 'CUSTOMER' || role === 'PROVIDER') && (
+                {isAuth && (role === 'CUSTOMER' || role === 'GUIDE') && (
                   <Link
-                    to="/orders"
+                    to="/bookings"
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
                   >
-                    Мои заказы
+                    Мои бронирования
                   </Link>
                 )}
-                {isAuth && role === 'PROVIDER' && (
+                {isAuth && role === 'GUIDE' && (
                   <Link
-                    to="/provider"
+                    to="/guide"
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-primary-600"
                   >
-                    Мои услуги
+                    Мои экскурсии
                   </Link>
                 )}
                 {isAuth && role === 'ADMIN' && (

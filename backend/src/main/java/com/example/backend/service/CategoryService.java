@@ -3,7 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.CategoryDto;
 import com.example.backend.model.Category;
 import com.example.backend.repository.CategoryRepository;
-import com.example.backend.repository.ServiceRepository;
+import com.example.backend.repository.TourRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final ServiceRepository serviceRepository;
+    private final TourRepository tourRepository;
 
     public List<CategoryDto> getAllCategories() {
         log.debug("Getting all categories");
@@ -84,10 +84,9 @@ public class CategoryService {
         dto.setDescription(category.getDescription());
         dto.setIcon(category.getIcon());
         try {
-            dto.setServiceCount((long) serviceRepository.findByCategoryIdAndActiveTrue(category.getId()).size());
+            dto.setServiceCount(tourRepository.countByCategoryIdAndActiveTrue(category.getId()));
         } catch (Exception e) {
-            log.warn("Error counting services for category {}: {}", category.getId(), e.getMessage());
-           
+            log.warn("Error counting tours for category {}: {}", category.getId(), e.getMessage());
             dto.setServiceCount(0L);
         }
         return dto;

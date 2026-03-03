@@ -28,6 +28,6 @@ public class Category {
     private String icon;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Service> services = new HashSet<>();
+    private Set<Tour> tours = new HashSet<>();
 }
 

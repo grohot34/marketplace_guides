@@ -25,6 +25,10 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
+    /** Google OAuth2 subject ID для связи с аккаунтом Google */
+    @Column(name = "google_sub", unique = true)
+    private String googleSub;
+
     @NotBlank
     @Email
     @Column(unique = true, nullable = false)
@@ -53,11 +57,23 @@ public class User {
     @Column(nullable = false)
     private Boolean active = true;
 
+    // Guide-specific fields
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+    private String bio;
+    private String languages; // Comma-separated list of languages
+    private String certifications;
+    private Double averageRating = 0.0;
+    private Integer totalRatings = 0;
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Order> orders = new HashSet<>();
+    private Set<Booking> bookings = new HashSet<>();
+
+    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Tour> tours = new HashSet<>();
 
     public enum Role {
-        CUSTOMER, PROVIDER, ADMIN
+        CUSTOMER, GUIDE, ADMIN
     }
 }
 

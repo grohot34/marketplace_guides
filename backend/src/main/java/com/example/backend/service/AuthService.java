@@ -104,5 +104,59 @@ public class AuthService {
             throw new RuntimeException("Login failed: " + e.getMessage(), e);
         }
     }
+
+    @Transactional
+    public AuthResponse processOAuth2User(org.springframework.security.oauth2.core.user.OAuth2User oauth2User) {
+        String googleSub = oauth2User.getAttribute("sub");
+        String email = oauth2User.getAttribute("email");
+        String givenName = oauth2User.getAttribute("given_name");
+        String familyName = oauth2User.getAttribute("family_name");
+
+        User user = userRepository.findByGoogleSub(googleSub)
+                .or(() -> userRepository.findByEmail(email))
+                .orElseGet(() -> createUserFromGoogle(googleSub, email, givenName, familyName));
+
+        if (user.getGoogleSub() == null && googleSub != null) {
+            user.setGoogleSub(googleSub);
+            user = userRepository.save(user);
+        }
+
+        if (!user.getActive()) {
+            throw new RuntimeException("User account is disabled");
+        }
+
+        org.springframework.security.core.userdetails.UserDetails userDetails =
+                org.springframework.security.core.userdetails.User.builder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .authorities("ROLE_" + user.getRole().name())
+                        .build();
+
+        String token = jwtTokenProvider.generateToken(userDetails);
+        return new AuthResponse(token, user.getUsername(), user.getRole().name());
+    }
+
+    private User createUserFromGoogle(String googleSub, String email, String givenName, String familyName) {
+        String baseUsername = email != null ? email.split("@")[0] : "google_" + googleSub.substring(0, Math.min(8, googleSub.length()));
+        String username = baseUsername;
+        int suffix = 0;
+        while (userRepository.existsByUsername(username)) {
+            username = baseUsername + "_" + (++suffix);
+        }
+
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email != null ? email : username + "@google.oauth");
+        user.setPassword(passwordEncoder.encode(java.util.UUID.randomUUID().toString()));
+        user.setFirstName(givenName != null ? givenName : "User");
+        user.setLastName(familyName != null ? familyName : "");
+        user.setGoogleSub(googleSub);
+        user.setRole(User.Role.CUSTOMER);
+        user.setActive(true);
+
+        user = userRepository.save(user);
+        log.info("Created user from Google OAuth: {}", user.getUsername());
+        return user;
+    }
 }
 

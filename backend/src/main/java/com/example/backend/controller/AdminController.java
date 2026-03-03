@@ -3,11 +3,15 @@ package com.example.backend.controller;
 import com.example.backend.dto.AdminStatsDto;
 import com.example.backend.dto.CreateOrderRequest;
 import com.example.backend.dto.OrderDto;
+import com.example.backend.dto.ReviewDto;
 import com.example.backend.dto.ServiceDto;
 import com.example.backend.dto.UserDto;
 import com.example.backend.model.Order;
+import com.example.backend.model.Review;
 import com.example.backend.model.User;
 import com.example.backend.service.AdminService;
+import com.example.backend.service.ReviewService;
+import com.example.backend.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,6 +31,8 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final ReviewService reviewService;
+    private final SecurityUtil securityUtil;
 
     @GetMapping("/stats")
     @Operation(summary = "Get admin statistics")
@@ -125,6 +131,33 @@ public class AdminController {
             @Valid @RequestBody CreateOrderRequest request,
             @RequestParam Long customerId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.createOrder(request, customerId));
+    }
+
+    @GetMapping("/reviews")
+    @Operation(summary = "List reviews for moderation (optional status filter)")
+    public ResponseEntity<List<ReviewDto>> getReviewsForModeration(
+            @RequestParam(required = false) Review.ReviewStatus status) {
+        return ResponseEntity.ok(reviewService.getAllReviewsForAdmin(status));
+    }
+
+    @PutMapping("/reviews/{id}/status")
+    @Operation(summary = "Set review status (APPROVED / REJECTED)")
+    public ResponseEntity<ReviewDto> setReviewStatus(
+            @PathVariable Long id,
+            @RequestParam Review.ReviewStatus status,
+            org.springframework.security.core.Authentication authentication) {
+        return ResponseEntity.ok(reviewService.setReviewStatus(id, status));
+    }
+
+    @PutMapping("/reviews/{id}/response")
+    @Operation(summary = "Set admin response to review")
+    public ResponseEntity<ReviewDto> setReviewResponse(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, String> body,
+            org.springframework.security.core.Authentication authentication) {
+        String responseText = body != null ? body.get("response") : null;
+        Long adminId = securityUtil.getUserIdFromAuthentication(authentication);
+        return ResponseEntity.ok(reviewService.setReviewResponse(id, responseText != null ? responseText : "", adminId));
     }
 }
 

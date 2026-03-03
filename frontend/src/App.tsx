@@ -3,14 +3,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
-import ServicesPage from './pages/ServicesPage'
-import ServiceDetailPage from './pages/ServiceDetailPage'
-import OrdersPage from './pages/OrdersPage'
+import ToursPage from './pages/ToursPage'
+import TourDetailPage from './pages/TourDetailPage'
+import BookingsPage from './pages/BookingsPage'
 import LoginPage from './pages/LoginPage'
+import AuthCallbackPage from './pages/AuthCallbackPage'
 import RegisterPage from './pages/RegisterPage'
 import ProfilePage from './pages/ProfilePage'
 import AdminPage from './pages/AdminPage'
-import ProviderPage from './pages/ProviderPage'
+import GuidePage from './pages/GuidePage'
+import GuideProfilePage from './pages/GuideProfilePage'
 import ProtectedRoute from './components/ProtectedRoute'
 
 const queryClient = new QueryClient({
@@ -33,16 +35,18 @@ function App() {
       >
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
-            <Route path="services" element={<ServicesPage />} />
-            <Route path="services/:id" element={<ServiceDetailPage />} />
+            <Route path="tours" element={<ToursPage />} />
+            <Route path="tours/:id" element={<TourDetailPage />} />
+            <Route path="guides/:id" element={<GuideProfilePage />} />
             <Route
-              path="orders"
+              path="bookings"
               element={
                 <ProtectedRoute>
-                  <OrdersPage />
+                  <BookingsPage />
                 </ProtectedRoute>
               }
             />
@@ -55,10 +59,10 @@ function App() {
               }
             />
             <Route
-              path="provider"
+              path="guide"
               element={
-                <ProtectedRoute requiredRole="PROVIDER">
-                  <ProviderPage />
+                <ProtectedRoute requiredRole="GUIDE">
+                  <GuidePage />
                 </ProtectedRoute>
               }
             />

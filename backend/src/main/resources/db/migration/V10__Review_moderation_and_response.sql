@@ -1,0 +1,5 @@
+-- Модерация отзывов и ответы на отзывы
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'APPROVED';
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS response TEXT;
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS responded_at TIMESTAMP;
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS responded_by_id BIGINT REFERENCES users(id);

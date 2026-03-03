@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.ReviewDto;
+import com.example.backend.model.User;
 import com.example.backend.service.ReviewService;
 import com.example.backend.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,16 +37,16 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewById(id));
     }
 
-    @GetMapping("/provider/{providerId}")
-    @Operation(summary = "Get reviews by provider")
-    public ResponseEntity<List<ReviewDto>> getReviewsByProvider(@PathVariable Long providerId) {
-        return ResponseEntity.ok(reviewService.getReviewsByProvider(providerId));
+    @GetMapping("/guide/{guideId}")
+    @Operation(summary = "Get reviews by guide")
+    public ResponseEntity<List<ReviewDto>> getReviewsByGuide(@PathVariable Long guideId) {
+        return ResponseEntity.ok(reviewService.getReviewsByGuide(guideId));
     }
 
-    @GetMapping("/service/{serviceId}")
-    @Operation(summary = "Get reviews by service")
-    public ResponseEntity<List<ReviewDto>> getReviewsByService(@PathVariable Long serviceId) {
-        return ResponseEntity.ok(reviewService.getReviewsByService(serviceId));
+    @GetMapping("/tour/{tourId}")
+    @Operation(summary = "Get reviews by tour")
+    public ResponseEntity<List<ReviewDto>> getReviewsByTour(@PathVariable Long tourId) {
+        return ResponseEntity.ok(reviewService.getReviewsByTour(tourId));
     }
 
     @PostMapping
@@ -64,15 +65,21 @@ public class ReviewController {
     @Operation(summary = "Update review")
     public ResponseEntity<ReviewDto> updateReview(
             @PathVariable Long id,
-            @Valid @RequestBody ReviewDto reviewDto) {
-        return ResponseEntity.ok(reviewService.updateReview(id, reviewDto));
+            @Valid @RequestBody ReviewDto reviewDto,
+            Authentication authentication) {
+        Long userId = securityUtil.getUserIdFromAuthentication(authentication);
+        return ResponseEntity.ok(reviewService.updateReview(id, userId, reviewDto));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     @Operation(summary = "Delete review")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
+    public ResponseEntity<Void> deleteReview(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Long userId = securityUtil.getUserIdFromAuthentication(authentication);
+        boolean isAdmin = User.Role.ADMIN.equals(securityUtil.getUserRoleFromAuthentication(authentication));
+        reviewService.deleteReview(id, userId, isAdmin);
         return ResponseEntity.noContent().build();
     }
 

@@ -170,7 +170,7 @@ export default function ServiceDetailPage() {
         </div>
 
         <div>
-          <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+          <div className="bg-white rounded-lg shadow-md p-6 lg:sticky lg:top-4">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Заказать услугу</h2>
             <form onSubmit={handleOrder}>
               <div className="mb-4">

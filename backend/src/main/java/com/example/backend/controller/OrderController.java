@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     @GetMapping("/my-provider-orders")
-    @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @Operation(summary = "Get orders for provider's services")
     public ResponseEntity<List<OrderDto>> getMyProviderOrders(Authentication authentication) {
         // Возвращаем заказы, где пользователь является исполнителем
@@ -81,7 +81,7 @@ public class OrderController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'PROVIDER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'GUIDE')")
     @Operation(summary = "Create a new order")
     public ResponseEntity<OrderDto> createOrder(
             @Valid @RequestBody CreateOrderRequest request,
@@ -92,7 +92,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @Operation(summary = "Update order status")
     public ResponseEntity<OrderDto> updateOrderStatus(
             @PathVariable Long id,
@@ -101,8 +101,8 @@ public class OrderController {
         Long providerId = null;
         User.Role role = securityUtil.getUserRoleFromAuthentication(authentication);
         
-        // Если PROVIDER, проверяем что заказ принадлежит ему
-        if (role == User.Role.PROVIDER) {
+        // Если GUIDE, проверяем что заказ принадлежит ему
+        if (role == User.Role.GUIDE) {
             providerId = securityUtil.getUserIdFromAuthentication(authentication);
         }
         
@@ -118,7 +118,7 @@ public class OrderController {
     }
 
     @GetMapping("/provider/stats")
-    @PreAuthorize("hasAnyRole('PROVIDER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @Operation(summary = "Get provider statistics")
     public ResponseEntity<ProviderStatsDto> getProviderStats(Authentication authentication) {
         Long providerId = securityUtil.getUserIdFromAuthentication(authentication);
