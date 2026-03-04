@@ -12,7 +12,6 @@ public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    /** SimpMessagingTemplate опционален: если WebSocket не настроен (например в тестах), сервис всё равно создаётся. */
     public NotificationService(@Autowired(required = false) SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }

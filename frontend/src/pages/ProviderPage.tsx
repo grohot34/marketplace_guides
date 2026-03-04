@@ -48,7 +48,6 @@ export default function ProviderPage() {
     },
   })
 
-  // Заказы на услуги исполнителя
   const { data: orders, error: ordersError } = useQuery({
     queryKey: ['orders', 'my-provider-orders'],
     queryFn: async () => {
@@ -76,7 +75,6 @@ export default function ProviderPage() {
     enabled: activeTab === 'book-service',
   })
 
-  // Фильтрация заказов
   const filteredOrders = orders?.filter((order) => {
     if (orderStatusFilter !== 'ALL' && order.status !== orderStatusFilter) return false
     if (orderSearch) {
@@ -89,7 +87,6 @@ export default function ProviderPage() {
     return true
   }) || []
 
-  // Фильтрация услуг
   const filteredServices = services?.filter((service) => {
     if (serviceCategoryFilter !== 'ALL' && service.categoryId !== Number(serviceCategoryFilter)) return false
     if (serviceSearch) {
@@ -103,7 +100,6 @@ export default function ProviderPage() {
     return true
   }) || []
 
-  // Статистика с сервера
   const { data: providerStats } = useQuery({
     queryKey: ['provider', 'stats'],
     queryFn: async () => {
@@ -113,7 +109,6 @@ export default function ProviderPage() {
     enabled: activeTab === 'stats',
   })
 
-  // Локальная статистика для быстрого отображения
   const localStats = {
     totalServices: services?.length || 0,
     totalOrders: orders?.length || 0,
@@ -188,7 +183,6 @@ export default function ProviderPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Панель исполнителя</h1>
 
-      {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="-mb-px flex space-x-8">
           <button
@@ -238,7 +232,6 @@ export default function ProviderPage() {
         </nav>
       </div>
 
-      {/* Services Tab */}
       {activeTab === 'services' && (
         <div>
           <div className="flex justify-between items-center mb-6 gap-4">
@@ -345,7 +338,6 @@ export default function ProviderPage() {
         </div>
       )}
 
-      {/* Orders Tab */}
       {activeTab === 'orders' && (
         <div>
           <div className="flex justify-between items-center mb-6 gap-4">
@@ -448,7 +440,6 @@ export default function ProviderPage() {
         </div>
       )}
 
-      {/* Book Service Tab */}
       {activeTab === 'book-service' && (
         <div>
           <div className="flex justify-between items-center mb-6">
@@ -522,7 +513,6 @@ export default function ProviderPage() {
         </div>
       )}
 
-      {/* Stats Tab */}
       {activeTab === 'stats' && (
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Статистика</h2>
@@ -698,7 +688,6 @@ export default function ProviderPage() {
         </div>
       )}
 
-      {/* Edit Service Modal */}
       {editingService && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
@@ -790,7 +779,6 @@ export default function ProviderPage() {
         </div>
       )}
 
-      {/* Book Service Modal */}
       {showBookService && selectedServiceForBooking && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">

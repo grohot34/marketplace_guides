@@ -107,7 +107,6 @@ public class BookingService {
                 throw new RuntimeException("Number of participants exceeds maximum allowed (" + tour.getMaxParticipants() + ")");
             }
 
-            // Check availability
             Long existingBookings = bookingRepository.countActiveBookingsForTourAndDateTime(tour, request.getTourDateTime());
             if (existingBookings + request.getNumberOfParticipants() > tour.getMaxParticipants()) {
                 throw new RuntimeException("Not enough available spots for this tour date");

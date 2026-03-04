@@ -25,7 +25,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
-    /** Google OAuth2 subject ID для связи с аккаунтом Google */
     @Column(name = "google_sub", unique = true)
     private String googleSub;
 
@@ -57,11 +56,10 @@ public class User {
     @Column(nullable = false)
     private Boolean active = true;
 
-    // Guide-specific fields
     @Column(name = "avatar_url")
     private String avatarUrl;
     private String bio;
-    private String languages; // Comma-separated list of languages
+    private String languages;
     private String certifications;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

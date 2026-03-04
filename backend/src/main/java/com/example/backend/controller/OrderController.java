@@ -47,7 +47,6 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get current user orders (as customer)")
     public ResponseEntity<List<OrderDto>> getMyOrders(Authentication authentication) {
-        // Всегда возвращаем заказы, где пользователь является клиентом
         Long userId = securityUtil.getUserIdFromAuthentication(authentication);
         return ResponseEntity.ok(orderService.getOrdersByCustomer(userId));
     }
@@ -56,7 +55,6 @@ public class OrderController {
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @Operation(summary = "Get orders for provider's services")
     public ResponseEntity<List<OrderDto>> getMyProviderOrders(Authentication authentication) {
-        // Возвращаем заказы, где пользователь является исполнителем
         Long providerId = securityUtil.getUserIdFromAuthentication(authentication);
         return ResponseEntity.ok(orderService.getOrdersByProvider(providerId));
     }
@@ -101,7 +99,6 @@ public class OrderController {
         Long providerId = null;
         User.Role role = securityUtil.getUserRoleFromAuthentication(authentication);
         
-        // Если GUIDE, проверяем что заказ принадлежит ему
         if (role == User.Role.GUIDE) {
             providerId = securityUtil.getUserIdFromAuthentication(authentication);
         }

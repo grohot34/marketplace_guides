@@ -3,7 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.ReviewDto;
 import com.example.backend.model.Booking;
 import com.example.backend.model.Review;
-import com.example.backend.model.User;
+
 import com.example.backend.repository.BookingRepository;
 import com.example.backend.repository.ReviewRepository;
 import com.example.backend.repository.UserRepository;

@@ -28,7 +28,6 @@ public class Booking {
     @JoinColumn(name = "tour_id", nullable = false)
     private Tour tour;
 
-    /** Гид определяется через тур (3НФ: не дублируем guide_id). */
     public User getGuide() {
         return tour != null ? tour.getGuide() : null;
     }

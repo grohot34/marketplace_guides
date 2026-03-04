@@ -15,11 +15,10 @@ import com.example.backend.repository.OrderRepository;
 import com.example.backend.repository.ServiceRepository;
 import com.example.backend.repository.TourRepository;
 import com.example.backend.repository.UserRepository;
-import com.example.backend.service.OrderService;
-import com.example.backend.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +40,7 @@ public class AdminService {
     private final CategoryRepository categoryRepository;
     private final UserService userService;
     private final OrderService orderService;
-    private final PasswordEncoder passwordEncoder;
+    
 
     public AdminStatsDto getStatistics() {
         AdminStatsDto stats = new AdminStatsDto();

@@ -33,7 +33,6 @@ public class DataLoader {
         return args -> {
             log.info("DataLoader started");
         
-            // Flyway миграции уже загрузили данные, поэтому просто проверяем и обновляем пароли если нужно
             try {
                 long userCount = userRepository.count();
                 log.info("Current user count in database: {}", userCount);
@@ -41,7 +40,6 @@ public class DataLoader {
                 if (userCount > 0) {
                     log.info("Database already initialized by Flyway migrations");
                     
-                    // Обновляем пароли пользователей правильными хешами если они были созданы с placeholder хешами
                     updateUserPasswordIfNeeded(userRepository, "admin", "admin123");
                     updateUserPasswordIfNeeded(userRepository, "guide1", "guide123");
                     updateUserPasswordIfNeeded(userRepository, "guide2", "guide123");
@@ -331,9 +329,7 @@ public class DataLoader {
     private void updateUserPasswordIfNeeded(UserRepository userRepository, String username, String password) {
         try {
             userRepository.findByUsername(username).ifPresent(user -> {
-                // Проверяем, нужно ли обновить пароль (если он не соответствует правильному формату)
                 String currentHash = user.getPassword();
-                // Если хеш слишком короткий или не начинается с $2a$, обновляем его
                 if (currentHash == null || currentHash.length() < 60 || !currentHash.startsWith("$2a$")) {
                     user.setPassword(passwordEncoder.encode(password));
                     userRepository.save(user);

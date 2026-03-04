@@ -545,7 +545,6 @@ export default function GuidePage() {
         </div>
       )}
 
-      {/* Подтверждение удаления экскурсии */}
       {tourToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
@@ -664,7 +663,6 @@ export default function GuidePage() {
         </div>
       )}
 
-      {/* Модальное окно: Редактировать экскурсию */}
       {editingTour && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6">

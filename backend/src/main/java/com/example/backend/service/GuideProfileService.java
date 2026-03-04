@@ -18,9 +18,6 @@ public class GuideProfileService {
     private final TourService tourService;
     private final ReviewRepository reviewRepository;
 
-    /**
-     * Публичный профиль гида для просмотра туристами.
-     */
     public GuideProfileDto getGuideProfile(Long guideId) {
         User guide = userRepository.findById(guideId)
                 .orElseThrow(() -> new RuntimeException("Guide not found"));

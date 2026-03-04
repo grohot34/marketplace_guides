@@ -63,7 +63,6 @@ export default function ServiceDetailPage() {
       return
     }
 
-    // Проверка, что дата не в прошлом
     const selectedDate = new Date(scheduledDateTime)
     if (selectedDate < new Date()) {
       setFormErrors({ scheduledDateTime: 'Дата не может быть в прошлом' })

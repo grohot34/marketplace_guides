@@ -52,7 +52,6 @@ export default function OrdersPage() {
     },
   })
 
-  // Фильтрация заказов
   const filteredOrders = orders?.filter((order) => {
     if (statusFilter !== 'ALL' && order.status !== statusFilter) return false
     if (orderSearch) {
@@ -133,7 +132,6 @@ export default function OrdersPage() {
         <div className="space-y-4">
           {filteredOrders
             .sort((a, b) => {
-              // Сортируем: сначала активные, потом завершенные
               if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1
               if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1
               return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

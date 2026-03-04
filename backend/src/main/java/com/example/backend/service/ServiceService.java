@@ -9,8 +9,7 @@ import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,7 +123,6 @@ public class ServiceService {
             dto.setProviderName(service.getProvider().getFirstName() + " " + service.getProvider().getLastName());
         }
 
-        // Review stats removed - Service model is deprecated, use TourService instead
         dto.setAverageRating(0.0);
         dto.setReviewCount(0);
 

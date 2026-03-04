@@ -24,11 +24,8 @@ public class Review {
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
-    /** Клиент определяется через бронирование (3НФ). */
     public User getCustomer() { return booking != null ? booking.getCustomer() : null; }
-    /** Гид определяется через бронирование → тур (3НФ). */
     public User getGuide() { return booking != null && booking.getTour() != null ? booking.getTour().getGuide() : null; }
-    /** Тур определяется через бронирование (3НФ). */
     public Tour getTour() { return booking != null ? booking.getTour() : null; }
 
     @NotNull
