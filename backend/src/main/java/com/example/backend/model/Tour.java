@@ -62,12 +62,6 @@ public class Tour {
     @Column(nullable = false)
     private Boolean active = true;
 
-    @Column(nullable = false)
-    private Double averageRating = 0.0;
-
-    @Column(nullable = false)
-    private Integer totalRatings = 0;
-
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Booking> bookings = new HashSet<>();
 }

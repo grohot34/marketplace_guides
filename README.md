@@ -34,6 +34,33 @@
 - React Query
 - Zustand
 
+## Паттерны проектирования
+
+### Backend (Spring Boot)
+
+| Паттерн | Где используется |
+|--------|-------------------|
+| **Слоистая архитектура** | Controller → Service → Repository; разделение ответственности по пакетам. |
+| **Repository (DAO)** | Интерфейсы `*Repository extends JpaRepository` — абстракция доступа к БД. |
+| **Dependency Injection** | Внедрение зависимостей через конструктор (`@RequiredArgsConstructor`, `private final`). |
+| **MVC** | Контроллеры обрабатывают запросы, сервисы — логику, сущности и DTO — данные. |
+| **DTO** | Классы в `dto/` для запросов/ответов API без раскрытия сущностей. |
+| **Adapter** | `JwtAuthenticationFilter`, `OAuth2LoginSuccessHandler`, `CustomUserDetailsService` (адаптация к Spring Security). |
+| **Strategy** | Разные стратегии аутентификации (JWT / OAuth2) в конфигурации Security. |
+| **Template Method** | `OncePerRequestFilter` → переопределение `doFilterInternal` в `JwtAuthenticationFilter`. |
+| **Facade** | Сервисы скрывают репозитории, кэш, Kafka, уведомления за единым API. |
+| **Декоратор (AOP)** | `@Cacheable` / `@CacheEvict` — кэширование ответов (tours, bookings, users и т.д.). |
+| **Event-Driven** | Kafka: отправка событий (`OrderEvent`), `@KafkaListener` в `OrderEventConsumer`. |
+| **Exception Handler** | `@RestControllerAdvice` в `GlobalExceptionHandler` — единая обработка ошибок. |
+| **Singleton** | Сервисы и компоненты Spring — один экземпляр на контекст. |
+
+### Frontend (React)
+
+| Паттерн | Где используется |
+|--------|-------------------|
+| **Server State (React Query)** | `useQuery`, `useMutation`, `useQueryClient` — загрузка, кэш и инвалидация данных с API. |
+| **Container/Presentational** | Страницы запрашивают данные и передают в компоненты; разделение логики и отображения. |
+
 ## Запуск проекта
 
 ### Используя Docker Compose
@@ -85,7 +112,7 @@ cd backend && mvn test -Pintegration
 
 При первом запуске автоматически создаются:
 - 6 категорий экскурсий (Исторические, Культурные, Пешеходные, Гастрономические, Природные, Вечерние)
-- 8 тестовых экскурсий с описаниями, ценами и программами
+- 8 тестовых экскурсий по Беларуси: Мирский замок, Несвижский замок, Национальный художественный музей, Музей истории ВОВ, прогулка по Минску, белорусская кухня, Беловежская пуща, вечерний Минск (с картинками для карточек)
 - 5 тестовых пользователей (1 админ, 2 гида, 2 клиента)
 
 Все данные можно использовать для тестирования функционала маркетплейса.

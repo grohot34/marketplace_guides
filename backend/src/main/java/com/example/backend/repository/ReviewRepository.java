@@ -11,21 +11,19 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    List<Review> findByGuideId(Long guideId);
-    List<Review> findByTourId(Long tourId);
     List<Review> findByStatus(Review.ReviewStatus status);
-    List<Review> findByGuide_IdAndStatus(Long guideId, Review.ReviewStatus status);
-    List<Review> findByTour_IdAndStatus(Long tourId, Review.ReviewStatus status);
-    List<Review> findByBookingId(Long bookingId);
-    Optional<Review> findByBookingIdAndCustomerId(Long bookingId, Long customerId);
+    List<Review> findByBooking_Tour_Guide_IdAndStatus(Long guideId, Review.ReviewStatus status);
+    List<Review> findByBooking_Tour_IdAndStatus(Long tourId, Review.ReviewStatus status);
+    List<Review> findByBooking_Id(Long bookingId);
+    Optional<Review> findByBooking_IdAndBooking_Customer_Id(Long bookingId, Long customerId);
 
-    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.guide.id = :guideId AND r.status = 'APPROVED'")
+    @Query("SELECT AVG(r.rating) FROM Review r JOIN r.booking b WHERE b.tour.guide.id = :guideId AND r.status = 'APPROVED'")
     Double getAverageRatingByGuideId(@Param("guideId") Long guideId);
-    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.tour.id = :tourId AND r.status = 'APPROVED'")
+    @Query("SELECT AVG(r.rating) FROM Review r JOIN r.booking b WHERE b.tour.id = :tourId AND r.status = 'APPROVED'")
     Double getAverageRatingByTourId(@Param("tourId") Long tourId);
-    @Query("SELECT COUNT(r) FROM Review r WHERE r.guide.id = :guideId AND r.status = 'APPROVED'")
+    @Query("SELECT COUNT(r) FROM Review r JOIN r.booking b WHERE b.tour.guide.id = :guideId AND r.status = 'APPROVED'")
     Long countByGuideId(@Param("guideId") Long guideId);
-    @Query("SELECT COUNT(r) FROM Review r WHERE r.tour.id = :tourId AND r.status = 'APPROVED'")
+    @Query("SELECT COUNT(r) FROM Review r JOIN r.booking b WHERE b.tour.id = :tourId AND r.status = 'APPROVED'")
     Long countByTourId(@Param("tourId") Long tourId);
 }
 

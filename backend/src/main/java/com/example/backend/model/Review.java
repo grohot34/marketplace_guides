@@ -24,17 +24,12 @@ public class Review {
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private User customer;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "guide_id", nullable = false)
-    private User guide;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tour_id", nullable = false)
-    private Tour tour;
+    /** Клиент определяется через бронирование (3НФ). */
+    public User getCustomer() { return booking != null ? booking.getCustomer() : null; }
+    /** Гид определяется через бронирование → тур (3НФ). */
+    public User getGuide() { return booking != null && booking.getTour() != null ? booking.getTour().getGuide() : null; }
+    /** Тур определяется через бронирование (3НФ). */
+    public Tour getTour() { return booking != null ? booking.getTour() : null; }
 
     @NotNull
     @Min(1)

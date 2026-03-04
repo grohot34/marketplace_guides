@@ -265,7 +265,7 @@ export default function TourDetailPage() {
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
-                  placeholder="+7 (999) 123-45-67"
+                  placeholder="+375 (29) 123-45-67"
                 />
               </div>
 

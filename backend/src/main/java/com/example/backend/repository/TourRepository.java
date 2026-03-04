@@ -33,7 +33,9 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
            "LOWER(t.description) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(t.location) LIKE LOWER(CONCAT('%', :query, '%')))")
     List<Tour> searchActiveTours(@Param("query") String query);
 
-    @Query("SELECT t FROM Tour t LEFT JOIN FETCH t.category LEFT JOIN FETCH t.guide WHERE t.active = true ORDER BY t.averageRating DESC")
+    @Query(value = "SELECT t.* FROM tours t " +
+            "LEFT JOIN (SELECT b.tour_id, AVG(r.rating) AS avg_r FROM reviews r JOIN bookings b ON r.booking_id = b.id WHERE r.status = 'APPROVED' GROUP BY b.tour_id) sub ON sub.tour_id = t.id " +
+            "WHERE t.active = true ORDER BY COALESCE(sub.avg_r, 0) DESC", nativeQuery = true)
     List<Tour> findTopRatedTours();
 
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"category", "guide"})

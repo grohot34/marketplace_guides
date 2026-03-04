@@ -63,8 +63,6 @@ public class User {
     private String bio;
     private String languages; // Comma-separated list of languages
     private String certifications;
-    private Double averageRating = 0.0;
-    private Integer totalRatings = 0;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Booking> bookings = new HashSet<>();

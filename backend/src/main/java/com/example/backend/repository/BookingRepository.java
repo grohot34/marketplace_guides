@@ -14,17 +14,17 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"customer", "tour", "guide"})
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"customer", "tour", "tour.guide"})
     List<Booking> findByCustomer(User customer);
 
-    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"customer", "tour", "guide"})
-    List<Booking> findByGuide(User guide);
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"customer", "tour", "tour.guide"})
+    List<Booking> findByTour_Guide(User guide);
 
-    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"customer", "tour", "guide"})
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"customer", "tour", "tour.guide"})
     List<Booking> findByTourId(Long tourId);
-    
-    @Query("SELECT b FROM Booking b WHERE b.guide = :guide AND b.status = :status")
-    List<Booking> findByGuideAndStatus(@Param("guide") User guide, @Param("status") Booking.BookingStatus status);
+
+    @Query("SELECT b FROM Booking b WHERE b.tour.guide = :guide AND b.status = :status")
+    List<Booking> findByTour_GuideAndStatus(@Param("guide") User guide, @Param("status") Booking.BookingStatus status);
     
     @Query("SELECT b FROM Booking b WHERE b.customer = :customer AND b.status = :status")
     List<Booking> findByCustomerAndStatus(@Param("customer") User customer, @Param("status") Booking.BookingStatus status);

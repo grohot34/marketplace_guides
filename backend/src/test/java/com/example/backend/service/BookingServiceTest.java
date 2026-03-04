@@ -62,7 +62,6 @@ class BookingServiceTest {
         booking = new Booking();
         booking.setId(10L);
         booking.setCustomer(customer);
-        booking.setGuide(guide);
         booking.setTour(tour);
         booking.setStatus(Booking.BookingStatus.PENDING);
     }

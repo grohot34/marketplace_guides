@@ -1,17 +1,21 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.NotificationDto;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
-@RequiredArgsConstructor
 public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
+
+    /** SimpMessagingTemplate опционален: если WebSocket не настроен (например в тестах), сервис всё равно создаётся. */
+    public NotificationService(@Autowired(required = false) SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     public void sendNotification(Long userId, String type, String title, String message) {
         try {

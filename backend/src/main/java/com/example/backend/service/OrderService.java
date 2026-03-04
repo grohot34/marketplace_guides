@@ -30,7 +30,7 @@ public class OrderService {
     private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
     private final NotificationService notificationService;
 
-    @Value("${kafka.topic.order-events}")
+    @Value("${kafka.topic.order-events:order-events}")
     private String orderEventsTopic;
 
     @Cacheable(value = "orders", key = "'all'")

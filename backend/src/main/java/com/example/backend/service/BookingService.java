@@ -62,7 +62,7 @@ public class BookingService {
     public List<BookingDto> getBookingsByGuide(Long guideId) {
         User guide = userRepository.findById(guideId)
                 .orElseThrow(() -> new RuntimeException("Guide not found"));
-        return bookingRepository.findByGuide(guide).stream()
+        return bookingRepository.findByTour_Guide(guide).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -118,7 +118,6 @@ public class BookingService {
             Booking booking = new Booking();
             booking.setCustomer(customer);
             booking.setTour(tour);
-            booking.setGuide(tour.getGuide());
             booking.setTourDateTime(request.getTourDateTime());
             booking.setNumberOfParticipants(request.getNumberOfParticipants());
             booking.setContactPhone(request.getContactPhone() != null ? request.getContactPhone() : customer.getPhone());
@@ -310,7 +309,7 @@ public class BookingService {
         dto.setCompletedAt(booking.getCompletedAt());
         dto.setCancelledAt(booking.getCancelledAt());
         dto.setPaid(Boolean.TRUE.equals(booking.getPaid()));
-        reviewRepository.findByBookingId(booking.getId()).stream()
+        reviewRepository.findByBooking_Id(booking.getId()).stream()
                 .findFirst()
                 .ifPresent(r -> {
                     dto.setHasReview(true);
