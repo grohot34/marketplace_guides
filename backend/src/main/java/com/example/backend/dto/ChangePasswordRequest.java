@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChangePasswordRequest {
-    /** Текущий пароль (для входа по email/паролю). Для OAuth-пользователя можно пустой при первой установке пароля. */
     private String currentPassword;
 
     @NotBlank(message = "Новый пароль обязателен")

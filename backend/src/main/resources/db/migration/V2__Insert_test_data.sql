@@ -13,11 +13,11 @@ ON CONFLICT (name) DO NOTHING;
 -- Note: DataLoader will update passwords with proper hashes if needed
 -- For testing, using placeholder hash - DataLoader ensures correct hashes are set
 INSERT INTO users (username, email, password, first_name, last_name, phone, role, active, bio, languages, certifications) VALUES
-('admin', 'admin@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Администратор', 'Системы', '+7 (999) 000-00-01', 'ADMIN', TRUE, NULL, NULL, NULL),
-('guide1', 'guide1@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Иван', 'Иванов', '+7 (999) 111-11-11', 'GUIDE', TRUE, 'Опытный гид с 10-летним стажем. Провожу экскурсии по историческим местам Москвы.', 'Русский, Английский', 'Лицензия гида-экскурсовода'),
-('guide2', 'guide2@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Мария', 'Петрова', '+7 (999) 222-22-22', 'GUIDE', TRUE, 'Профессиональный гид по искусству и культуре. Специализируюсь на музеях и галереях.', 'Русский, Английский, Французский', 'Сертификат экскурсовода по музеям'),
-('customer1', 'customer1@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Алексей', 'Сидоров', '+7 (999) 333-33-33', 'CUSTOMER', TRUE, NULL, NULL, NULL),
-('customer2', 'customer2@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Елена', 'Козлова', '+7 (999) 444-44-44', 'CUSTOMER', TRUE, NULL, NULL, NULL)
+('admin', 'admin@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Администратор', 'Системы', '+375 (29) 000-00-01', 'ADMIN', TRUE, NULL, NULL, NULL),
+('guide1', 'guide1@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Иван', 'Иванов', '+375 (29) 111-11-11', 'GUIDE', TRUE, 'Опытный гид с 10-летним стажем. Провожу экскурсии по замкам и историческим местам Беларуси.', 'Русский, Белорусский, Английский', 'Лицензия гида-экскурсовода'),
+('guide2', 'guide2@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Мария', 'Петрова', '+375 (29) 222-22-22', 'GUIDE', TRUE, 'Профессиональный гид по искусству и культуре. Специализируюсь на музеях Минска и гастрономических турах.', 'Русский, Белорусский, Английский', 'Сертификат экскурсовода по музеям'),
+('customer1', 'customer1@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Алексей', 'Сидоров', '+375 (29) 333-33-33', 'CUSTOMER', TRUE, NULL, NULL, NULL),
+('customer2', 'customer2@example.com', '$2a$10$placeholder_hash_will_be_updated_by_dataloader', 'Елена', 'Козлова', '+375 (29) 444-44-44', 'CUSTOMER', TRUE, NULL, NULL, NULL)
 ON CONFLICT (username) DO NOTHING;
 
 -- Insert test tours

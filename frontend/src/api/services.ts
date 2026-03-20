@@ -130,7 +130,6 @@ export interface User {
   role: string
   active?: boolean
   createdAt?: string
-  /** true, если к аккаунту привязан вход через Google */
   oauthLinked?: boolean
 }
 

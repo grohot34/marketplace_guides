@@ -45,10 +45,7 @@ public class BookingDto {
     private LocalDateTime completedAt;
     private LocalDateTime cancelledAt;
 
-    /** Есть ли отзыв к этому бронированию */
     private Boolean hasReview;
-    /** ID отзыва (если есть), для редактирования */
     private Long reviewId;
-    /** Оплачено ли бронирование (Stripe) */
     private Boolean paid;
 }

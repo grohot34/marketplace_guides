@@ -3,11 +3,9 @@ package com.example.backend.service;
 import com.example.backend.dto.ReviewDto;
 import com.example.backend.model.Booking;
 import com.example.backend.model.Review;
-import com.example.backend.model.Tour;
-import com.example.backend.model.User;
+
 import com.example.backend.repository.BookingRepository;
 import com.example.backend.repository.ReviewRepository;
-import com.example.backend.repository.TourRepository;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,6 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
-    private final TourRepository tourRepository;
     private final UserRepository userRepository;
 
     public List<ReviewDto> getAllReviews() {
@@ -39,13 +36,13 @@ public class ReviewService {
     }
 
     public List<ReviewDto> getReviewsByGuide(Long guideId) {
-        return reviewRepository.findByGuide_IdAndStatus(guideId, Review.ReviewStatus.APPROVED).stream()
+        return reviewRepository.findByBooking_Tour_Guide_IdAndStatus(guideId, Review.ReviewStatus.APPROVED).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
     public List<ReviewDto> getReviewsByTour(Long tourId) {
-        return reviewRepository.findByTour_IdAndStatus(tourId, Review.ReviewStatus.APPROVED).stream()
+        return reviewRepository.findByBooking_Tour_IdAndStatus(tourId, Review.ReviewStatus.APPROVED).stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
@@ -58,7 +55,7 @@ public class ReviewService {
     }
 
     public ReviewStats getReviewStatsForTour(Long tourId) {
-        List<Review> reviews = reviewRepository.findByTour_IdAndStatus(tourId, Review.ReviewStatus.APPROVED);
+        List<Review> reviews = reviewRepository.findByBooking_Tour_IdAndStatus(tourId, Review.ReviewStatus.APPROVED);
         if (reviews.isEmpty()) {
             return new ReviewStats(0.0, 0);
         }
@@ -88,48 +85,20 @@ public class ReviewService {
             throw new RuntimeException("You can only review completed bookings");
         }
 
-        reviewRepository.findByBookingIdAndCustomerId(booking.getId(), customerId)
+        reviewRepository.findByBooking_IdAndBooking_Customer_Id(booking.getId(), customerId)
                 .ifPresent(r -> {
                     throw new RuntimeException("Review already exists for this booking");
                 });
 
         Review review = new Review();
         review.setBooking(booking);
-        review.setCustomer(booking.getCustomer());
-        review.setGuide(booking.getGuide());
-        review.setTour(booking.getTour());
         review.setRating(reviewDto.getRating());
         review.setComment(reviewDto.getComment());
         review.setCreatedAt(LocalDateTime.now());
         review.setStatus(Review.ReviewStatus.PENDING);
 
         review = reviewRepository.save(review);
-
-        // Update tour and guide ratings
-        updateTourRating(booking.getTour().getId());
-        updateGuideRating(booking.getGuide().getId());
-
         return convertToDto(review);
-    }
-
-    @Transactional
-    private void updateTourRating(Long tourId) {
-        ReviewStats stats = getReviewStatsForTour(tourId);
-        Tour tour = tourRepository.findById(tourId)
-                .orElseThrow(() -> new RuntimeException("Tour not found"));
-        tour.setAverageRating(stats.getAverageRating());
-        tour.setTotalRatings(stats.getReviewCount());
-        tourRepository.save(tour);
-    }
-
-    @Transactional
-    private void updateGuideRating(Long guideId) {
-        ReviewStats stats = getReviewStatsForGuide(guideId);
-        User guide = userRepository.findById(guideId)
-                .orElseThrow(() -> new RuntimeException("Guide not found"));
-        guide.setAverageRating(stats.getAverageRating());
-        guide.setTotalRatings(stats.getReviewCount());
-        userRepository.save(guide);
     }
 
     @Transactional
@@ -142,8 +111,6 @@ public class ReviewService {
         review.setRating(reviewDto.getRating());
         review.setComment(reviewDto.getComment());
         review = reviewRepository.save(review);
-        updateTourRating(review.getTour().getId());
-        updateGuideRating(review.getGuide().getId());
         return convertToDto(review);
     }
 
@@ -154,11 +121,7 @@ public class ReviewService {
         if (!isAdmin && !review.getCustomer().getId().equals(userId)) {
             throw new RuntimeException("You can only delete your own review");
         }
-        Long tourId = review.getTour().getId();
-        Long guideId = review.getGuide().getId();
         reviewRepository.delete(review);
-        updateTourRating(tourId);
-        updateGuideRating(guideId);
     }
 
     @Transactional
@@ -167,8 +130,6 @@ public class ReviewService {
                 .orElseThrow(() -> new RuntimeException("Review not found"));
         review.setStatus(status);
         review = reviewRepository.save(review);
-        updateTourRating(review.getTour().getId());
-        updateGuideRating(review.getGuide().getId());
         return convertToDto(review);
     }
 

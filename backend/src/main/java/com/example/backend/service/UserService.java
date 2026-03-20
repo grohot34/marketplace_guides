@@ -82,10 +82,6 @@ public class UserService {
         return convertToDto(user);
     }
 
-    /**
-     * Обновление профиля текущего пользователя (только безопасные поля).
-     * Менять username и role нельзя.
-     */
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public UserDto updateCurrentUser(String username, UserDto userDto) {
@@ -107,10 +103,6 @@ public class UserService {
         return convertToDto(user);
     }
 
-    /**
-     * Смена пароля. Для входа по email/паролю нужен текущий пароль.
-     * Если пользователь привязал Google (oauthLinked), при первой установке пароля currentPassword может быть пустым.
-     */
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public void changePassword(String username, String currentPassword, String newPassword) {
@@ -119,7 +111,6 @@ public class UserService {
 
         boolean isOAuthOnly = user.getGoogleSub() != null && !user.getGoogleSub().isBlank();
         if (isOAuthOnly && (currentPassword == null || currentPassword.isBlank())) {
-            // Первая установка пароля для аккаунта, созданного через Google
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             return;

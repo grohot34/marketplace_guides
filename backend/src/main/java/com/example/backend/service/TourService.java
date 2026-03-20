@@ -91,8 +91,6 @@ public class TourService {
         tour.setCategory(category);
         tour.setGuide(guide);
         tour.setActive(true);
-        tour.setAverageRating(0.0);
-        tour.setTotalRatings(0);
 
         tour = tourRepository.save(tour);
         return convertToDto(tour);
@@ -150,10 +148,12 @@ public class TourService {
         dto.setGuideId(tour.getGuide().getId());
         dto.setGuideName(tour.getGuide().getFirstName() + " " + tour.getGuide().getLastName());
         dto.setGuideBio(tour.getGuide().getBio());
-        dto.setGuideRating(tour.getGuide().getAverageRating());
+        ReviewService.ReviewStats guideStats = reviewService.getReviewStatsForGuide(tour.getGuide().getId());
+        dto.setGuideRating(guideStats != null ? guideStats.getAverageRating() : 0.0);
         dto.setActive(tour.getActive());
-        dto.setAverageRating(tour.getAverageRating());
-        dto.setTotalRatings(tour.getTotalRatings());
+        ReviewService.ReviewStats tourStats = reviewService.getReviewStatsForTour(tour.getId());
+        dto.setAverageRating(tourStats != null ? tourStats.getAverageRating() : 0.0);
+        dto.setTotalRatings(tourStats != null ? tourStats.getReviewCount() : 0);
 
         return dto;
     }

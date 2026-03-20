@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.GuideProfileDto;
 import com.example.backend.dto.TourDto;
 import com.example.backend.model.User;
+import com.example.backend.repository.ReviewRepository;
 import com.example.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,8 @@ public class GuideProfileService {
 
     private final UserRepository userRepository;
     private final TourService tourService;
+    private final ReviewRepository reviewRepository;
 
-    /**
-     * Публичный профиль гида для просмотра туристами.
-     */
     public GuideProfileDto getGuideProfile(Long guideId) {
         User guide = userRepository.findById(guideId)
                 .orElseThrow(() -> new RuntimeException("Guide not found"));
@@ -30,6 +29,8 @@ public class GuideProfileService {
         String fullName = (guide.getFirstName() != null ? guide.getFirstName() : "") + " "
                 + (guide.getLastName() != null ? guide.getLastName() : "").trim();
 
+        Double avgRating = reviewRepository.getAverageRatingByGuideId(guideId);
+        Long totalRatings = reviewRepository.countByGuideId(guideId);
         return new GuideProfileDto(
                 guide.getId(),
                 guide.getFirstName(),
@@ -38,8 +39,8 @@ public class GuideProfileService {
                 guide.getBio(),
                 guide.getLanguages(),
                 guide.getCertifications(),
-                guide.getAverageRating() != null ? guide.getAverageRating() : 0.0,
-                guide.getTotalRatings() != null ? guide.getTotalRatings() : 0,
+                avgRating != null ? avgRating : 0.0,
+                totalRatings != null ? totalRatings.intValue() : 0,
                 guide.getAvatarUrl(),
                 tourDtos
         );

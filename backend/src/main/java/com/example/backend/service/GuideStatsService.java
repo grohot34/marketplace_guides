@@ -29,7 +29,7 @@ public class GuideStatsService {
                 .orElseThrow(() -> new RuntimeException("Guide not found"));
 
         int totalTours = tourRepository.findByGuideAndActiveTrue(guide).size();
-        List<Booking> bookings = bookingRepository.findByGuide(guide);
+        List<Booking> bookings = bookingRepository.findByTour_Guide(guide);
 
         int pending = 0, confirmed = 0, inProgress = 0, completed = 0, cancelled = 0;
         BigDecimal totalRevenue = BigDecimal.ZERO;

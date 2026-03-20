@@ -29,7 +29,6 @@ export default function ServicesPage() {
     },
   })
 
-  // Фильтрация услуг по поисковому запросу
   const filteredServices = services?.filter((service) => {
     if (!searchQuery) return true
     const query = searchQuery.toLowerCase()

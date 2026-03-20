@@ -28,9 +28,9 @@ public class Booking {
     @JoinColumn(name = "tour_id", nullable = false)
     private Tour tour;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "guide_id", nullable = false)
-    private User guide;
+    public User getGuide() {
+        return tour != null ? tour.getGuide() : null;
+    }
 
     @NotNull
     @Column(nullable = false)

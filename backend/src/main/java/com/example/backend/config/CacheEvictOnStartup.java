@@ -7,10 +7,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-/**
- * Очищает кэш туров при старте приложения, чтобы после миграций БД (например, обновление image_url)
- * запрос «все экскурсии» возвращал актуальные данные с фотографиями, а не устаревший кэш из Redis.
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j

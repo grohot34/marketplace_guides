@@ -30,7 +30,6 @@ public class StripePaymentService {
     @Value("${stripe.webhook.secret:}")
     private String webhookSecret;
 
-    /** Курс BYN → EUR для оплаты (Stripe не поддерживает BYN). Например 0.28 = 1 BYN ≈ 0.28 EUR */
     @Value("${stripe.byn-to-eur-rate:0.28}")
     private double bynToEurRate;
 
@@ -41,10 +40,6 @@ public class StripePaymentService {
         }
     }
 
-    /**
-     * Создаёт сессию Stripe Checkout для оплаты бронирования.
-     * Сумма в BYN конвертируется в EUR по курсу (Stripe не поддерживает BYN); в описании указываем сумму в BYN.
-     */
     public String createCheckoutSession(Long bookingId, String successUrl, String cancelUrl) {
         if (secretKey == null || secretKey.isBlank()) {
             throw new IllegalStateException("Stripe is not configured (stripe.api.secret-key)");
@@ -62,11 +57,10 @@ public class StripePaymentService {
         }
 
         BigDecimal total = booking.getTotalPrice();
-        // Stripe не поддерживает BYN — списываем в EUR по курсу (85 BYN × rate = X EUR в центах)
         long amountEurCents = total.multiply(BigDecimal.valueOf(bynToEurRate)).multiply(BigDecimal.valueOf(100))
                 .setScale(0, java.math.RoundingMode.HALF_UP).longValue();
         if (amountEurCents < 50) {
-            amountEurCents = 50; // минимум 0.50 EUR
+            amountEurCents = 50;
         }
 
         String tourTitle = booking.getTour() != null ? booking.getTour().getTitle() : "Бронирование #" + bookingId;
@@ -99,10 +93,6 @@ public class StripePaymentService {
         }
     }
 
-    /**
-     * Подтверждает оплату по session_id (вызов с фронта после редиректа с Stripe).
-     * Если вебхук не сработал (например, локальная разработка), состояние обновится при возврате пользователя.
-     */
     public void confirmPaymentBySessionId(String sessionId) {
         if (secretKey == null || secretKey.isBlank()) {
             throw new IllegalStateException("Stripe is not configured");
@@ -139,9 +129,6 @@ public class StripePaymentService {
         log.info("Booking {} marked as paid and confirmed", booking.getId());
     }
 
-    /**
-     * Обработка вебхука Stripe (checkout.session.completed).
-     */
     public void handleWebhook(String payload, String signatureHeader) {
         if (webhookSecret == null || webhookSecret.isBlank()) {
             throw new IllegalStateException("Stripe webhook secret is not configured");

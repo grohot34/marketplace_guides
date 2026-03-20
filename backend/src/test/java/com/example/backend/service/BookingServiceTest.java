@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
+
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,7 +62,6 @@ class BookingServiceTest {
         booking = new Booking();
         booking.setId(10L);
         booking.setCustomer(customer);
-        booking.setGuide(guide);
         booking.setTour(tour);
         booking.setStatus(Booking.BookingStatus.PENDING);
     }
